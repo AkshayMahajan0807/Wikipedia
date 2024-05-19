@@ -10,8 +10,27 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@react-native-masked-view/masked-view": "^0.3.1",
+    "@react-native-voice/voice": "^3.2.4",
+    "@react-navigation/bottom-tabs": "next",
+    "@react-navigation/drawer": "next",
+    "@react-navigation/material-top-tabs": "next",
+    "@react-navigation/native": "next",
+    "@react-navigation/native-stack": "next",
+    "@react-navigation/stack": "next",
+    "@types/react-native-vector-icons": "^6.4.18",
     "react": "18.2.0",
-    "react-native": "0.74.1"
+    "react-native": "0.74.1",
+    "react-native-gesture-handler": "^2.16.2",
+    "react-native-modal": "^13.0.1",
+    "react-native-pager-view": "^6.3.1",
+    "react-native-paper": "^5.12.3",
+    "react-native-reanimated": "^3.11.0",
+    "react-native-responsive-dimensions": "^3.1.1",
+    "react-native-safe-area-context": "^4.10.1",
+    "react-native-screens": "^3.31.1",
+    "react-native-vector-icons": "^10.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
