@@ -4,6 +4,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {DefaultTheme, PaperProvider} from 'react-native-paper';
 import {VoiceContextProvider} from '../context/VoiceContext';
 import {HomeContextProvider} from '../context/HomeContext';
+import {QuestionContextProvider} from '../context/QuestionContext';
 
 export const AppNavigator = () => {
   console.log('this is app navigator');
@@ -19,7 +20,9 @@ export const AppNavigator = () => {
     <PaperProvider theme={theme}>
       <NavigationContainer>
         <SafeAreaProvider>
-          <HomeStack />
+          <QuestionContextProvider>
+            <HomeStack />
+          </QuestionContextProvider>
         </SafeAreaProvider>
       </NavigationContainer>
     </PaperProvider>

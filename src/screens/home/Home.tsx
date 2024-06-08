@@ -11,6 +11,7 @@ import {FlatList} from 'react-native';
 import {languagesData} from './languagesData';
 import {LanguageComponent} from './LanguageComponent';
 import {responsiveHeight} from 'react-native-responsive-dimensions';
+import {Button} from 'react-native-paper';
 // import {Text} from 'react-native-paper';
 
 export const Home = ({navigation, route}: HomeStackScreenProps) => {
@@ -19,6 +20,9 @@ export const Home = ({navigation, route}: HomeStackScreenProps) => {
 
   return (
     <View style={{flex: 1}}>
+      <Button onPress={() => navigation.navigate('QuestionScreen')}>
+        on Press
+      </Button>
       <SearchButton
         searchTitle="this is Search button"
         onPressSearchButton={() => console.log('this is search button')}

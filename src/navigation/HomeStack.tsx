@@ -11,10 +11,12 @@ import {
 } from '@react-navigation/native-stack';
 import {VoiceContextProvider} from '../context/VoiceContext';
 import {HomeContextProvider} from '../context/HomeContext';
+import {QuestionScreen} from '../screens/home/QuestionScreen/QuestionScreen';
 
 export type HomeStackParamList = {
   Home: {name: string};
   Search?: {isVoiceRecognize?: boolean};
+  QuestionScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
@@ -32,6 +34,7 @@ export const HomeStack = () => {
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Search" component={Search} />
+          <Stack.Screen name="QuestionScreen" component={QuestionScreen} />
         </Stack.Navigator>
       </VoiceContextProvider>
     </HomeContextProvider>

@@ -9,7 +9,7 @@ import {
 import {MD2Colors, Searchbar} from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import CustomIcon from './CustomIcon';
-import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {IconButtonComponent} from './IconButtonComponent';
 type InputSearchBarComponentType = {
   value: string;
@@ -32,6 +32,7 @@ type InputSearchBarComponentType = {
         ((e: GestureResponderEvent) => void))
     | undefined;
   placeholder?: string | undefined;
+  iconName?: 'clear' | 'mic';
 };
 export const InputSearchBarComponent = ({
   value,
@@ -40,6 +41,7 @@ export const InputSearchBarComponent = ({
   style,
   onSearchToPress,
   placeholder,
+  iconName = 'mic',
 }: InputSearchBarComponentType) => {
   return (
     <Searchbar
@@ -51,8 +53,8 @@ export const InputSearchBarComponent = ({
       placeholder={placeholder}
       right={() => (
         <IconButtonComponent
-          name="mic"
-          VectorIconComponent={Entypo}
+          name={iconName}
+          VectorIconComponent={MaterialIcons}
           size={3}
           iconButtonSize={2.1}
           onPress={onSearchToPress}

@@ -3,10 +3,12 @@ import {Text} from 'react-native-paper';
 import {HomeStackScreenProps} from '../../../navigation/HomeStack';
 import {InputSearchBarComponent} from '../../../component/InputSearchBarComponent';
 import {responsiveWidth} from 'react-native-responsive-dimensions';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {VoiceRecognitionComponent} from '../../../component/VoiceRecognizationComponent';
 import {useVoiceContext} from '../../../context/VoiceContext';
 import {useHomeContext} from '../../../context/HomeContext';
+import {ActionSheetComponent} from '../../../component/ActionSheetComponent';
+import {LanguageComponent} from '../LanguageComponent';
 
 export const Search = ({navigation, route}: HomeStackScreenProps) => {
   const {isVoiceRecognize}: any = route.params;
@@ -31,6 +33,8 @@ export const Search = ({navigation, route}: HomeStackScreenProps) => {
       onStart();
     }
   }, [isVoiceRecognize]);
+
+  const [searchValue, setSearchValue] = useState('');
   return (
     <>
       <VoiceRecognitionComponent
@@ -41,14 +45,23 @@ export const Search = ({navigation, route}: HomeStackScreenProps) => {
       <View
         style={{flex: 1, flexDirection: 'column', padding: responsiveWidth(2)}}>
         <InputSearchBarComponent
+          iconName={searchValue || searchBarValue ? 'clear' : 'mic'}
           value={searchBarValue}
           onChangeText={text => {
             setSearchBarValue(text);
+            setSearchValue(text);
             onChangeToShowContent(text, false);
           }}
           onSearchToPress={() => {
-            setIsVisible(true);
-            onStart();
+            searchValue || searchBarValue
+              ? (() => {
+                  setSearchValue('');
+                  setSearchBarValue('');
+                })()
+              : (() => {
+                  setIsVisible(true);
+                  onStart();
+                })();
           }}
         />
       </View>

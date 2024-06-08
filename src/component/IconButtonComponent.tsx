@@ -9,6 +9,9 @@ import {
   TextStyle,
 } from 'react-native';
 import {responsiveFontSize} from 'react-native-responsive-dimensions';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Entypo from 'react-native-vector-icons/Entypo';
+
 type IconButtonComponent = {
   name: string;
   size?: number | undefined;
