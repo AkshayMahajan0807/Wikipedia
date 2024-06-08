@@ -1,4 +1,10 @@
-import {createContext, useCallback, useContext, useState} from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import Voice, {
   SpeechEndEvent,
   SpeechResultsEvent,
@@ -28,8 +34,8 @@ const QuestionContextProvider = ({children}: QuestionContextProps) => {
   >(null);
   const [questionAnswerPair, setQuestionAnswerPair] = useState<
     {
-      question?: string;
-      ans?: string;
+      question: string;
+      ans: string;
     }[]
   >([]);
   const [answer, setAnswer] = useState(questionData.destinationOptions);
@@ -37,24 +43,44 @@ const QuestionContextProvider = ({children}: QuestionContextProps) => {
     setCurrentSelectedQuestion(question);
   };
 
+  useEffect(() => {
+    console.log('questionAnswerPair', questionAnswerPair, answer);
+  }, [questionAnswerPair, answer]);
   const onPressToRemoveAnswer = (ans: string) => {
     setQuestionAnswerPair(questionAnswerPair.filter(item => item.ans !== ans));
     setAnswer([...answer, ans]);
+    console.log(
+      'onPressToRemoveAnswer setQuestionAnswerPair',
+      questionAnswerPair.filter(item => item.ans !== ans),
+      '[...answer, ans]',
+      [...answer, ans],
+    );
   };
 
   const onPressSelectedQuestionSetAns = (selectedAns: string) => {
     if (currentSelectedQuestion) {
+      console.log(
+        'currentSelectedQuestion',
+        currentSelectedQuestion,
+        selectedAns,
+      );
+
       const existItem = questionAnswerPair.find(
         q => q.question === currentSelectedQuestion,
       );
-      if (existItem?.ans) {
-        const pair = [
-          {question: currentSelectedQuestion, ans: selectedAns},
-          ...questionAnswerPair,
-        ];
+      const existIndex = questionAnswerPair.findIndex(
+        q => q.question === currentSelectedQuestion,
+      );
+
+      if (existItem?.question) {
         const ans = existItem.ans;
+
+        const pair = {question: currentSelectedQuestion, ans: selectedAns};
+        const pairs = [...questionAnswerPair];
+        pairs.splice(existIndex, 1, pair);
+
         setAnswer([ans, ...answer.filter(ans => ans !== selectedAns)]);
-        setQuestionAnswerPair(pair);
+        setQuestionAnswerPair(pairs);
       } else {
         setAnswer(answer.filter(ans => ans !== selectedAns));
         const pair = [

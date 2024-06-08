@@ -14,6 +14,7 @@ export const QuestionItem = memo(
     const questionAns = questionAnswerPair.find(
       item => item.question == question,
     );
+
     return (
       <View
         style={{
