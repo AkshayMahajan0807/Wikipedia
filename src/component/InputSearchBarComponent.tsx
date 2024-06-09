@@ -1,9 +1,11 @@
 import {
   Falsy,
   GestureResponderEvent,
+  NativeSyntheticEvent,
   RecursiveArray,
   RegisteredStyle,
   StyleProp,
+  TextInputSubmitEditingEventData,
   TextStyle,
 } from 'react-native';
 import 'react-native-get-random-values';
@@ -38,6 +40,9 @@ type InputSearchBarComponentType = {
   iconName?: 'clear' | 'mic';
   ref?: React.LegacyRef<any> | undefined;
   onFocus?: () => void;
+  onSubmitEditing?:
+    | ((e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => void)
+    | undefined;
 };
 export const InputSearchBarComponent = forwardRef(
   (
@@ -50,6 +55,7 @@ export const InputSearchBarComponent = forwardRef(
       placeholder,
       iconName = 'mic',
       onFocus,
+      onSubmitEditing,
     }: InputSearchBarComponentType,
     ref: any,
   ) => {
@@ -63,10 +69,7 @@ export const InputSearchBarComponent = forwardRef(
         inputStyle={[{}, inputStyle]}
         style={[{backgroundColor: MD2Colors.amber300}, style]}
         returnKeyType="search"
-        onSubmitEditing={() => {
-          console.log('event');
-          onStoreSearchKeyword(value);
-        }}
+        onSubmitEditing={onSubmitEditing}
         mode="bar"
         placeholder={placeholder}
         right={() => (

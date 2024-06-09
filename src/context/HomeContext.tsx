@@ -161,6 +161,7 @@ const HomeContextProvider = ({children}: HomeContextProps) => {
   };
   const onStoreSearchKeyword = async (keyword: string) => {
     const newKeyword = keyword.trim();
+    setIsShowRecentSearchKeyWords(false);
     if (!newKeyword) {
       return;
     }
@@ -175,7 +176,7 @@ const HomeContextProvider = ({children}: HomeContextProps) => {
         searchKeyword: newKeyword,
         id,
       };
-      const existingData = [...storeSearchKeyword, searchKeywordObj];
+      const existingData = [...storeSearchKeyword, searchKeywordObj].reverse();
       setStoreSearchKeyword(existingData);
       setTempStoreSearchKeyword(existingData);
       // const data = await storage.getAsyncStorageItem(SEARCH_KEYWORD);

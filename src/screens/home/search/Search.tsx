@@ -1,4 +1,4 @@
-import {FlatList, View} from 'react-native';
+import {FlatList, TextInput, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {HomeStackScreenProps} from '../../../navigation/HomeStack';
 import {InputSearchBarComponent} from '../../../component/InputSearchBarComponent';
@@ -40,6 +40,7 @@ export const Search = ({navigation, route}: HomeStackScreenProps) => {
     inputRef,
     isShowRecentSearchKeyWords,
     onFocusToSearchBar,
+    onStoreSearchKeyword,
   } = useHomeContext();
   useEffect(() => {
     if (isVoiceRecognize) {
@@ -70,12 +71,17 @@ export const Search = ({navigation, route}: HomeStackScreenProps) => {
           value={searchBarValue}
           ref={inputRef}
           onFocus={() => onFocusToSearchBar()}
+          onSubmitEditing={() => {
+            onStoreSearchKeyword(searchValue);
+          }}
           onChangeText={text => {
             onKeywordFilter(text);
             setSearchBarValue(text);
             setSearchValue(text);
             onChangeToShowContent(text, false);
           }}
+          // inputStyle={{textAlign: 'right'}}
+          // style={{textAlign: 'right'}}
           onSearchToPress={() => {
             searchValue || searchBarValue
               ? (() => {
