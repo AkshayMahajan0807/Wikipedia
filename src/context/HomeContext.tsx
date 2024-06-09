@@ -3,11 +3,20 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import {languagesData} from '../screens/home/languagesData';
 import {languageDataType} from '../types/type';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {v4 as uuidv4} from 'uuid';
+import {storage} from '../storage/asyncStorageOperation';
+import {SEARCH_KEYWORD} from '../data/constantData';
+
+export type searchKeywordType = {
+  searchKeyword: string;
+  id: string;
+};
 
 interface IHomeContext {
   currentSelectedLanguage: languageDataType;
@@ -18,6 +27,18 @@ interface IHomeContext {
   searchBarValue: string;
   setInVisible: React.Dispatch<React.SetStateAction<boolean>>;
   inVisible: boolean;
+  onStoreSearchKeyword: (keyword: string) => Promise<void>;
+  storeSearchKeyword: searchKeywordType[];
+  tempStoreSearchKeyword: searchKeywordType[];
+  onKeywordFilter: (keyword: string) => void;
+  onPressToRestoreSearchKeyword: () => Promise<void>;
+  setTempStoreSearchKeyword: React.Dispatch<
+    React.SetStateAction<searchKeywordType[]>
+  >;
+  inputRef: React.MutableRefObject<any>;
+  onPressToSetSearchItem: (searchKeywordItem: searchKeywordType) => void;
+  isShowRecentSearchKeyWords: boolean;
+  onFocusToSearchBar: () => void;
 }
 
 const HomeContext = createContext<null | IHomeContext>(null);
@@ -32,6 +53,16 @@ const HomeContextProvider = ({children}: HomeContextProps) => {
   const [inVisible, setInVisible] = useState(false);
   const [searchBarValue, setSearchBarValue] = useState('');
   const [languageRandomId, setLanguageRandomId] = useState<number>(-10);
+  const [tempStoreSearchKeyword, setTempStoreSearchKeyword] = useState<
+    searchKeywordType[]
+  >([]);
+  const [storeSearchKeyword, setStoreSearchKeyword] = useState<
+    searchKeywordType[]
+  >([]);
+  const inputRef = useRef<any>(null);
+
+  const [isShowRecentSearchKeyWords, setIsShowRecentSearchKeyWords] =
+    useState<boolean>(true);
   const onPressSelectLanguage = useCallback(async (obj: languageDataType) => {
     setLanguageRandomId(Math.random() * obj.lgn_id * 10);
     setCurrentSelectedLanguage(obj);
@@ -73,6 +104,12 @@ const HomeContextProvider = ({children}: HomeContextProps) => {
       console.log(error);
     }
   };
+  const onKeywordFilter = (keyword: string) => {
+    setTempStoreSearchKeyword(
+      storeSearchKeyword.filter(item => item.searchKeyword.includes(keyword)),
+    );
+  };
+
   const onChangeToShowContent = async (
     content: string,
     isVoice: boolean = false,
@@ -122,6 +159,54 @@ const HomeContextProvider = ({children}: HomeContextProps) => {
     // );
     // console.log("current language selected responser",response);
   };
+  const onStoreSearchKeyword = async (keyword: string) => {
+    const newKeyword = keyword.trim();
+    if (!newKeyword) {
+      return;
+    }
+    const findKeyword = storeSearchKeyword.find(
+      item => item.searchKeyword === newKeyword,
+    );
+    if (findKeyword) {
+      return;
+    } else {
+      const id = uuidv4();
+      const searchKeywordObj = {
+        searchKeyword: newKeyword,
+        id,
+      };
+      const existingData = [...storeSearchKeyword, searchKeywordObj];
+      setStoreSearchKeyword(existingData);
+      setTempStoreSearchKeyword(existingData);
+      // const data = await storage.getAsyncStorageItem(SEARCH_KEYWORD);
+      await storage.setAsyncStorageItem(SEARCH_KEYWORD, existingData);
+      // if (!data) {
+      //   await storage.setAsyncStorageItem(SEARCH_KEYWORD, [searchKeywordObj]);
+      // } else {
+      //   await storage.setAsyncStorageItem(SEARCH_KEYWORD, existingData);
+      // }
+    }
+  };
+
+  const onPressToRestoreSearchKeyword = async () => {
+    const existingData = await storage.getAsyncStorageItem(SEARCH_KEYWORD);
+    if (!existingData) {
+      return;
+    } else {
+      setStoreSearchKeyword(existingData);
+      setTempStoreSearchKeyword(existingData);
+    }
+  };
+
+  const onFocusToSearchBar = () => {
+    setIsShowRecentSearchKeyWords(true);
+  };
+
+  const onPressToSetSearchItem = (searchKeywordItem: searchKeywordType) => {
+    inputRef.current.setNativeProps({text: searchKeywordItem.searchKeyword});
+    inputRef.current.blur();
+    setIsShowRecentSearchKeyWords(false);
+  };
   const value: IHomeContext = {
     currentSelectedLanguage,
     onPressSelectLanguage,
@@ -131,6 +216,16 @@ const HomeContextProvider = ({children}: HomeContextProps) => {
     searchBarValue,
     setInVisible,
     setSearchBarValue,
+    onStoreSearchKeyword,
+    storeSearchKeyword,
+    tempStoreSearchKeyword,
+    onKeywordFilter,
+    onPressToRestoreSearchKeyword,
+    setTempStoreSearchKeyword,
+    inputRef,
+    onPressToSetSearchItem,
+    isShowRecentSearchKeyWords,
+    onFocusToSearchBar,
   };
   return <HomeContext.Provider value={value}>{children}</HomeContext.Provider>;
 };

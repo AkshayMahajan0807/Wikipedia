@@ -12,12 +12,13 @@ import {languagesData} from './languagesData';
 import {LanguageComponent} from './LanguageComponent';
 import {responsiveHeight} from 'react-native-responsive-dimensions';
 import {Button} from 'react-native-paper';
+import {useHomeContext} from '../../context/HomeContext';
 // import {Text} from 'react-native-paper';
 
 export const Home = ({navigation, route}: HomeStackScreenProps) => {
   const {setMessage} = useVoiceContext();
   console.log('home component');
-
+  const {onPressToRestoreSearchKeyword} = useHomeContext();
   return (
     <View style={{flex: 1}}>
       <Button onPress={() => navigation.navigate('QuestionScreen')}>
@@ -25,7 +26,11 @@ export const Home = ({navigation, route}: HomeStackScreenProps) => {
       </Button>
       <SearchButton
         searchTitle="this is Search button"
-        onPressSearchButton={() => console.log('this is search button')}
+        onPressSearchButton={() => {
+          setMessage('');
+          onPressToRestoreSearchKeyword();
+          navigation.navigate('Search', {isVoiceRecognize: false});
+        }}
         onVoiceSearch={() => {
           setMessage('');
           navigation.navigate('Search', {isVoiceRecognize: true});

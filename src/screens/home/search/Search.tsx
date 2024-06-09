@@ -1,14 +1,18 @@
-import {View} from 'react-native';
+import {FlatList, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import {HomeStackScreenProps} from '../../../navigation/HomeStack';
 import {InputSearchBarComponent} from '../../../component/InputSearchBarComponent';
-import {responsiveWidth} from 'react-native-responsive-dimensions';
-import {useEffect, useState} from 'react';
+import {
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
+import {useEffect, useRef, useState} from 'react';
 import {VoiceRecognitionComponent} from '../../../component/VoiceRecognizationComponent';
 import {useVoiceContext} from '../../../context/VoiceContext';
 import {useHomeContext} from '../../../context/HomeContext';
 import {ActionSheetComponent} from '../../../component/ActionSheetComponent';
 import {LanguageComponent} from '../LanguageComponent';
+import {RecentSearchItem} from './RecentSearchItem';
 
 export const Search = ({navigation, route}: HomeStackScreenProps) => {
   const {isVoiceRecognize}: any = route.params;
@@ -25,8 +29,18 @@ export const Search = ({navigation, route}: HomeStackScreenProps) => {
     setMessage,
   } = useVoiceContext();
 
-  const {onChangeToShowContent, searchBarValue, setSearchBarValue} =
-    useHomeContext();
+  const {
+    onChangeToShowContent,
+    searchBarValue,
+    setSearchBarValue,
+    storeSearchKeyword,
+    tempStoreSearchKeyword,
+    onKeywordFilter,
+    setTempStoreSearchKeyword,
+    inputRef,
+    isShowRecentSearchKeyWords,
+    onFocusToSearchBar,
+  } = useHomeContext();
   useEffect(() => {
     if (isVoiceRecognize) {
       startToExecuteVoice();
@@ -35,6 +49,13 @@ export const Search = ({navigation, route}: HomeStackScreenProps) => {
   }, [isVoiceRecognize]);
 
   const [searchValue, setSearchValue] = useState('');
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('focused', inputRef.current);
+
+      inputRef.current?.focus();
+    }, 1000);
+  }, []);
   return (
     <>
       <VoiceRecognitionComponent
@@ -47,7 +68,10 @@ export const Search = ({navigation, route}: HomeStackScreenProps) => {
         <InputSearchBarComponent
           iconName={searchValue || searchBarValue ? 'clear' : 'mic'}
           value={searchBarValue}
+          ref={inputRef}
+          onFocus={() => onFocusToSearchBar()}
           onChangeText={text => {
+            onKeywordFilter(text);
             setSearchBarValue(text);
             setSearchValue(text);
             onChangeToShowContent(text, false);
@@ -57,6 +81,7 @@ export const Search = ({navigation, route}: HomeStackScreenProps) => {
               ? (() => {
                   setSearchValue('');
                   setSearchBarValue('');
+                  setTempStoreSearchKeyword(storeSearchKeyword);
                 })()
               : (() => {
                   setIsVisible(true);
@@ -64,6 +89,16 @@ export const Search = ({navigation, route}: HomeStackScreenProps) => {
                 })();
           }}
         />
+        {isShowRecentSearchKeyWords && (
+          <FlatList
+            data={tempStoreSearchKeyword}
+            style={{flex: 1}}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => <RecentSearchItem item={item} />}
+            ListFooterComponent={() => <View style={{}} />}
+            ListFooterComponentStyle={{paddingBottom: responsiveHeight(10)}}
+          />
+        )}
       </View>
     </>
   );
