@@ -69,15 +69,13 @@ export const Home = ({navigation, route}: HomeStackScreenProps) => {
             console.log('item', item);
 
             return (
-              <View
-                style={{flex: 1, backgroundColor: 'red', margin: 16}}
-                key={index}>
-                <ReturnTypeOfComponent url={item.imageurl} />
+              <View style={{flex: 1, margin: 16}} key={index}>
+                <ReturnTypeOfComponent url={item.imageurl} item={item} />
               </View>
             );
           }}
           width={width}
-          height={width / 2}
+          height={width / 1.2}
         />
       </View>
       <YouTubeVideoModal

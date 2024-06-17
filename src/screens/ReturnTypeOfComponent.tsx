@@ -11,7 +11,14 @@ import {
 import {useEffect, useState} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useHomeContext} from '../context/HomeContext';
-export const ReturnTypeOfComponent = ({url}: {url: string}) => {
+import {ReadMoreText} from '../component/ReadMoreText';
+export const ReturnTypeOfComponent = ({
+  url,
+  item,
+}: {
+  url: string;
+  item: any;
+}) => {
   const type = getRegularExp;
   const [thumbnail_url, setThumbnail_url] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +44,9 @@ export const ReturnTypeOfComponent = ({url}: {url: string}) => {
 
     return (
       <TouchableOpacity
+        style={{
+          flexDirection: 'column',
+        }}
         onPress={() => onPressYoutubeVideoThumbnail(videoID ?? '')}>
         {isLoading ? (
           <ActivityIndicator animating />
@@ -66,9 +76,9 @@ export const ReturnTypeOfComponent = ({url}: {url: string}) => {
             />
           )}
         />
+        <ReadMoreText text={item?.summery} />
       </TouchableOpacity>
     );
-    // <Image source={}/>
   } else if (getRegularExp('IMAGE')?.test(url)) {
     return (
       <Image
