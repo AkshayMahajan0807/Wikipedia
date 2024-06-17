@@ -1,18 +1,21 @@
-import {View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {getRegularExp, getYouTubeVideoId} from '../helper/helper';
 import {Image} from 'react-native';
-import {ActivityIndicator, Text} from 'react-native-paper';
+import {ActivityIndicator, Icon, IconButton, Text} from 'react-native-paper';
 import {getYoutubeMeta} from 'react-native-youtube-iframe';
 import {
   responsiveFontSize,
   responsiveHeight,
+  responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import {useEffect, useState} from 'react';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useHomeContext} from '../context/HomeContext';
 export const ReturnTypeOfComponent = ({url}: {url: string}) => {
   const type = getRegularExp;
   const [thumbnail_url, setThumbnail_url] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const {onPressYoutubeVideoThumbnail} = useHomeContext();
   if (getRegularExp('YOUTUBE')?.test(url)) {
     const videoID = getYouTubeVideoId(url);
     useEffect(() => {
@@ -33,7 +36,8 @@ export const ReturnTypeOfComponent = ({url}: {url: string}) => {
     }, [videoID]);
 
     return (
-      <View>
+      <TouchableOpacity
+        onPress={() => onPressYoutubeVideoThumbnail(videoID ?? '')}>
         {isLoading ? (
           <ActivityIndicator animating />
         ) : (
@@ -44,13 +48,25 @@ export const ReturnTypeOfComponent = ({url}: {url: string}) => {
             style={{position: 'relative'}}
           />
         )}
-        <AntDesign
-          name="play"
-          size={responsiveFontSize(4)}
-          color={'red'}
-          style={{position: 'absolute', top: 70, left: 170}}
+        <IconButton
+          size={responsiveFontSize(5)}
+          centered
+          iconColor="red"
+          underlayColor="#fff"
+          style={{
+            position: 'absolute',
+            top: responsiveHeight(7),
+            left: responsiveWidth(40),
+          }}
+          icon={() => (
+            <FontAwesome
+              name="youtube-play"
+              size={responsiveFontSize(5)}
+              color={'red'}
+            />
+          )}
         />
-      </View>
+      </TouchableOpacity>
     );
     // <Image source={}/>
   } else if (getRegularExp('IMAGE')?.test(url)) {

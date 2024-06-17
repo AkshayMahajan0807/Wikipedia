@@ -39,6 +39,10 @@ interface IHomeContext {
   onPressToSetSearchItem: (searchKeywordItem: searchKeywordType) => void;
   isShowRecentSearchKeyWords: boolean;
   onFocusToSearchBar: () => void;
+  videoID: string;
+  isOpenFullViewModal: boolean;
+  onPressYoutubeVideoThumbnail: (videoID: string) => void;
+  onPressToCloseYoutubeModal: () => void;
 }
 
 const HomeContext = createContext<null | IHomeContext>(null);
@@ -63,6 +67,17 @@ const HomeContextProvider = ({children}: HomeContextProps) => {
 
   const [isShowRecentSearchKeyWords, setIsShowRecentSearchKeyWords] =
     useState<boolean>(true);
+  const [videoID, setVideoID] = useState<string>('');
+  const [isOpenFullViewModal, setIsOpenFullViewModal] = useState(false);
+
+  const onPressToCloseYoutubeModal = () => {
+    setIsOpenFullViewModal(false);
+  };
+  const onPressYoutubeVideoThumbnail = (videoID: string) => {
+    setVideoID(videoID);
+    setIsOpenFullViewModal(true);
+  };
+
   const onPressSelectLanguage = useCallback(async (obj: languageDataType) => {
     setLanguageRandomId(Math.random() * obj.lgn_id * 10);
     setCurrentSelectedLanguage(obj);
@@ -227,6 +242,10 @@ const HomeContextProvider = ({children}: HomeContextProps) => {
     onPressToSetSearchItem,
     isShowRecentSearchKeyWords,
     onFocusToSearchBar,
+    isOpenFullViewModal,
+    videoID,
+    onPressYoutubeVideoThumbnail,
+    onPressToCloseYoutubeModal,
   };
   return <HomeContext.Provider value={value}>{children}</HomeContext.Provider>;
 };
